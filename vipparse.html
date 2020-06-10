@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Vip Parse</title>
+  <link rel="icon" href="http://pic.yupoo.com/owendawn/7d83eaa2/ac62287a.png" type="image/x-icon" />
+  <meta name="Keywords" content="vip解析,个人使用请勿用于商用传播">
+  <meta name="Description" content="vip解析,个人使用请勿用于商用传播">
+  <script crossorigin="anonymous" src="https://lib.baomitu.com/vue/2.6.11/vue.min.js"></script>
+  <!-- 引入样式 -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/mint-ui@1/lib/style.css"> -->
+  <link href="https://cdn.bootcdn.net/ajax/libs/mint-ui/2.2.13/style.min.css" rel="stylesheet">
+  <!-- 引入组件库 -->
+  <!-- <script src="https://unpkg.com/mint-ui@1/lib/index.js"></script> -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/mint-ui/2.2.13/index.js"></script>
+  <!-- 基础样式 -->
+  <link href="./asserts/base.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <style>
+    .mint-cell-wrapper {
+      padding: 0;
+    }
+
+    .mint-cell-wrapper>.mint-cell-title {
+      padding-left: 16px;
+    }
+
+    .mint-cell-value.is-link {
+      margin-right: 32px;
+    }
+
+    .chooseDiv {
+      background-image: linear-gradient(to top, #f1f0f0 10%, #ffffff 30%, #e2e2df 100%);
+      padding: 6px;
+    }
+  </style>
+  <div id="root">
+    <mt-header title="Vip Parser">
+      <mt-button slot="left" @click="goBack"><i class="fa fa-home"></i></mt-button>
+      <mt-button icon="more" slot="right" @click="toggleMenu"></mt-button>
+    </mt-header>
+    <mt-popup v-model="showMenu" position="right"
+      style="overflow:auto;max-width:360px;margin-top:-1px;width:70%;height:100%;background-color: #f8f8f8;">
+      <div>
+        <div style="text-align: center;font-weight: bolder;font-size: 3rem;padding: 34px 0;background-color: white;">
+          - UV -
+        </div>
+        <mt-cell title="VIP解析" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="问题之书" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="磁力转换" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
+        <mt-cell title="金融转换" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="经纬转换" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
+        <mt-cell title="视频转动画" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="图片灰度转换" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
+        <mt-cell title="车辆识别号解析" to="//github.com" is-link value="带链接"></mt-cell>
+        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
+      </div>
+    </mt-popup>
+    <mt-cell :title="chooseParser" class="chooseDiv">
+      <mt-button type="primary" plain @click="showParserList"><i class="fa fa-list"> Choose</i></mt-button>
+    </mt-cell>
+    <mt-popup v-model="showParsePop" position="bottom" style="width: 100%;">
+      <mt-picker :slots="getVipParserData()" showToolbar="true" valueKey="name" content="name" @change="toggleVipParser"
+        style="width: 100%;padding:24px;">
+      </mt-picker>
+      <mt-button type="primary" plain @click="chooseParse"><i class="fa fa-submit"> OK</i></mt-button>
+    </mt-popup>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#root',
+      data: {
+        showParsePop: false,
+        showMenu: false,
+        isFull: false,
+        type: null,
+        parser: null,
+        chooseParser: '',
+        vipParser: [
+          { newTab: false, tengxun: true, youku: true, iqiyi: true, mangguo: false, url: "http://jiexi.071811.cc/jx.php?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/jx/jx.php?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.du2.cc/?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://vip.jlsprh.com/v/3.php?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.598110.com/?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.598110.com/zuida.php?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jiexi.380k.com/?url=" },
+          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "https://2.08bk.com/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: true, mangguo: true, url: "http://jqaaa.com/jx.php?url=" },
+
+
+          { newTab: false, tengxun: true, youku: false, iqiyi: true, mangguo: false, url: "https://660e.com/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: true, mangguo: false, url: "http://yun.mt2t.com/lines?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: true, url: "http://jsap.attakids.com/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: true, url: "http://api.bbbbbb.me/jiexi/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: true, url: "http://api.bbbbbb.me/jx/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: true, url: "http://okjx.cc/?url=" },
+
+
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: false, url: "https://jx.618g.com/?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: false, url: "https://www.administratorw.com/video.php?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: false, url: "https://www.administratorw.com/admin.php?url=" },
+          { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: false, url: "http://17kyun.com/api.php?url=" },
+
+
+        ]
+      },
+      mounted() {
+        this.vipParser.forEach((it, idx, all) => {
+          it.name = (it.tengxun ? 'ⓣ' : '⎵')
+            + "_" + (it.youku ? 'ⓨ' : '⎵')
+            + "_" + (it.iqiyi ? 'ⓘ' : '⎵')
+            + "_" + (it.mangguo ? 'ⓜ' : '⎵')
+            + "  " + this.getName(it.url)
+            + (it.newTab ? ' +' : '');
+        })
+        this.chooseParser = this.vipParser[0].name
+        // this.type = this.$refs.Navbar.type;
+        // var _searchs = this.parseUrl();
+        // if (_searchs.u) {
+        //   var _allurl = this.uncompileStr(_searchs.u);
+        //   console.log(_allurl)
+        //   document.querySelectorAll('#node option').forEach(function (it, idx, all) {
+        //     if (_allurl.indexOf(it.value) !== -1) {
+        //       it.setAttribute('checked' , true);
+        //       it.setAttribute('selected' , true);
+        //       document.getElementById("vurl").value = _allurl.substring(it.value.length);
+        //     }
+        //   });
+        //   try {
+        //     document.getElementById("videoIframe").src = _allurl;
+        //   } catch (e) {
+        //     console.log(e);
+        //   }
+        // }
+      },
+      methods: {
+        chooseParse() {
+          this.showParsePop = false;
+        },
+        parseListFormatter() {
+          console.log(arguments)
+        },
+        getVipParserData() {
+          return [{
+            divider: true,
+            content: '视频解析策略',
+            className: 'slot2'
+          }, {
+            flex: 1,
+            values: this.vipParser.map((it, idx, all) => it.name),
+            className: 'slot1',
+            textAlign: 'center'
+          }]
+        },
+        showParserList() {
+          this.showParsePop = true;
+        },
+        toggleVipParser(dom, arr) {
+          console.log(arguments)
+          this.chooseParser=arr[0]
+        },
+        goBack() {
+          console.log(1)
+        },
+        toggleMenu() {
+          this.showMenu = !this.showMenu;
+          console.log(this.showMenu)
+        },
+        parseUrl() {
+          var _searchs = window.location.search;
+          if (_searchs.length === 0) return {};
+          _searchs = _searchs.substring(1);
+          var _ss = _searchs.split("&");
+          var _params = {};
+          for (var i = 0; i < _ss.length; i++) {
+            var __o = _ss[i];
+            if (__o === "") continue;
+            var __os = __o.split("=");
+            _params[__os[0]] = __os[1];
+          }
+          return _params;
+        },
+        getName(url) {
+          url = url.replace("http://", "").replace("https://", "");
+          url = url.substring(0, url.indexOf("/"));
+          let arr = url.split(".");
+          if (arr.length == 3) {
+            return arr[1];
+          } else if (arr.length === 2) {
+            return arr[0];
+          }
+        },
+        clickParse() {
+          var _urlRoot = document.getElementById("node").value;
+          var _vurl = document.getElementById("vurl").value;
+          var _url = _urlRoot + _vurl.trim();
+          for (var i = 0; i < this.vipParser.length; i++) {
+            var it = this.vipParser[i];
+            if (it.url == _urlRoot && it.newTab) {
+              window.open(_url);
+              return;
+            }
+          }
+          window.location.href = "vipparse.html?u=" + this.compileStr(_url);
+        },
+        showModel() {
+          if (this.isFull) {
+            document.getElementsByTagName("body")[0].setAttribute("class", "");
+            this.isFull = false;
+            document.getElementById("compress").style = "display:none;";
+            document.getElementById("expand").style = "";
+          } else {
+            document.getElementsByTagName("body")[0].setAttribute("class", "videomodel");
+            this.isFull = true;
+            document.getElementById("compress").style = "";
+            document.getElementById("expand").style = "display:none;";
+          }
+        },
+        compileStr(code) {
+          var c = String.fromCharCode(code.charCodeAt(0) + code.length);
+          for (var i = 1; i < code.length; i++) {
+            c += String.fromCharCode(code.charCodeAt(i) + code.charCodeAt(i - 1));
+          }
+          return escape(c);
+        },
+        uncompileStr(code) {
+          code = unescape(code);
+          var c = String.fromCharCode(code.charCodeAt(0) - code.length);
+          for (var i = 1; i < code.length; i++) {
+            c += String.fromCharCode(code.charCodeAt(i) - c.charCodeAt(i - 1));
+          }
+          return c;
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
