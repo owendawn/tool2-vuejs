@@ -5,6 +5,21 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Vip Parse</title>
+  <!-- <script>
+    (function (doc, win) {
+     var docEl = doc.documentElement,
+      resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+      recalc = function () {
+       var clientWidth = docEl.clientWidth;
+       if (!clientWidth) return;
+       docEl.style.fontSize = 100 * (clientWidth / 2000) + 'px';
+      };
+     if (!doc.addEventListener) return;
+     win.addEventListener(resizeEvt, recalc, false);
+     doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+   </script> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, shrink-to-fit=no,user-scalable=0">
   <link rel="icon" href="http://pic.yupoo.com/owendawn/7d83eaa2/ac62287a.png" type="image/x-icon" />
   <meta name="Keywords" content="vip解析,个人使用请勿用于商用传播">
   <meta name="Description" content="vip解析,个人使用请勿用于商用传播">
@@ -20,7 +35,7 @@
   <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="overflow: hidden;">
   <style>
     .mint-cell-wrapper {
       padding: 0;
@@ -36,55 +51,53 @@
 
     .chooseDiv {
       background-image: linear-gradient(to top, #f1f0f0 10%, #ffffff 30%, #e2e2df 100%);
-      padding: 6px;
+      padding: 0 6px;
+      height: 1.2rem;
+      /* padding-top: 0.1rem; */
+      min-height: 0;
+    }
+    .mint-header-title {
+      font-weight: bolder;
+      font-size: 0.75rem;
+    }
+    .pickerTitle{
+      /* flex-direction: row-reverse; */
+      justify-content: center;
     }
   </style>
-  <div id="root">
-    <mt-header title="Vip Parser">
-      <mt-button slot="left" @click="goBack"><i class="fa fa-home"></i></mt-button>
-      <mt-button icon="more" slot="right" @click="toggleMenu"></mt-button>
-    </mt-header>
-    <mt-popup v-model="showMenu" position="right"
-      style="overflow:auto;max-width:360px;margin-top:-1px;width:70%;height:100%;background-color: #f8f8f8;">
-      <div>
-        <div style="text-align: center;font-weight: bolder;font-size: 3rem;padding: 34px 0;background-color: white;">
-          - UV -
-        </div>
-        <mt-cell title="VIP解析" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="问题之书" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="磁力转换" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
-        <mt-cell title="金融转换" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="经纬转换" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
-        <mt-cell title="视频转动画" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="图片灰度转换" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
-        <mt-cell title="车辆识别号解析" to="//github.com" is-link value="带链接"></mt-cell>
-        <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>
-      </div>
-    </mt-popup>
+  <div id="root" style="height:100%;">
+    <pan-navbar></pan-navbar>
+   
     <mt-cell :title="chooseParser" class="chooseDiv">
-      <mt-button type="primary" plain @click="showParserList"><i class="fa fa-list"> Choose</i></mt-button>
+      <mt-button type="primary" plain @click="showParserList" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-list"> Choose</i></mt-button>
     </mt-cell>
-    <mt-popup v-model="showParsePop" position="bottom" style="width: 100%;">
-      <mt-picker :slots="getVipParserData()" showToolbar="true" valueKey="name" content="name" @change="toggleVipParser"
-        style="width: 100%;padding:24px;">
+    <div style="height:calc(100% - 2.7rem);background-color: black;">
+      <iframe width="100%" height="100%" src="" style="border:0;"></iframe>
+    </div>
+
+    
+    <mt-popup v-model="showParsePop" position="bottom" style="width: calc(100% - 48px);padding: 24px;">
+      <mt-picker :slots="getVipParserData()" textAlign="center" :defaultIndex="chooseParserIndex" showToolbar="true" valueKey="name" content="name" @change="toggleVipParser"
+        style="width: 100%;">
       </mt-picker>
-      <mt-button type="primary" plain @click="chooseParse"><i class="fa fa-submit"> OK</i></mt-button>
+      <div style="justify-content: space-around;display:flex;margin-top:24px;">
+      <mt-button type="danger" size="small" plain @click="cancelChooseParse" style="width: 30%;"><i class="fa fa-cancel"> Cancel</i></mt-button>
+      <mt-button type="primary" size="small" plain @click="chooseParse" style="width: 30%;"><i class="fa fa-ok"> Ok</i></mt-button>
+    </div>
     </mt-popup>
   </div>
-
+  <script src="./asserts/navbar.js"></script>
   <script>
     new Vue({
       el: '#root',
       data: {
         showParsePop: false,
-        showMenu: false,
         isFull: false,
         type: null,
         parser: null,
         chooseParser: '',
+        chooseParserTemp: '',
+        chooseParserIndex: -1,
         vipParser: [
           { newTab: false, tengxun: true, youku: true, iqiyi: true, mangguo: false, url: "http://jiexi.071811.cc/jx.php?url=" },
           { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
@@ -115,15 +128,27 @@
         ]
       },
       mounted() {
+        let replaceStr='⇿'
+         replaceStr='↔'
+         replaceStr='↠'
+         replaceStr='↝'
+         replaceStr='⇴'
+         replaceStr='⇝'
+         replaceStr='↛'
+         replaceStr='↣'
+         replaceStr='⇻'
+         replaceStr='↭'
         this.vipParser.forEach((it, idx, all) => {
-          it.name = (it.tengxun ? 'ⓣ' : '⎵')
-            + "_" + (it.youku ? 'ⓨ' : '⎵')
-            + "_" + (it.iqiyi ? 'ⓘ' : '⎵')
-            + "_" + (it.mangguo ? 'ⓜ' : '⎵')
-            + "  " + this.getName(it.url)
+          it.name = (it.tengxun ? 'ⓣ' : replaceStr)
+            + "_" + (it.youku ? 'ⓨ' : replaceStr)
+            + "_" + (it.iqiyi ? 'ⓘ' : replaceStr)
+            + "_" + (it.mangguo ? 'ⓜ' : replaceStr)
+            + " . " + this.getName(it.url)
             + (it.newTab ? ' +' : '');
         })
         this.chooseParser = this.vipParser[0].name
+        this.chooseParserTemp = this.vipParser[0].name
+        this.chooseParserIndex=0;
         // this.type = this.$refs.Navbar.type;
         // var _searchs = this.parseUrl();
         // if (_searchs.u) {
@@ -146,6 +171,15 @@
       methods: {
         chooseParse() {
           this.showParsePop = false;
+          this.chooseParser=this.chooseParserTemp;
+          this.vipParser.forEach((it,idx,all)=>{
+            if(it.name===this.chooseParserTemp){
+              this.chooseParserIndex=idx;
+            }
+          })
+        },
+        cancelChooseParse() {
+          this.showParsePop = false;
         },
         parseListFormatter() {
           console.log(arguments)
@@ -153,29 +187,27 @@
         getVipParserData() {
           return [{
             divider: true,
-            content: '视频解析策略',
-            className: 'slot2'
+            flex: 3,
+            content: '解析策略',
+            className: 'bolder pickerTitle',
+            textAlign: 'middle'
           }, {
-            flex: 1,
+            flex: 7,
             values: this.vipParser.map((it, idx, all) => it.name),
             className: 'slot1',
-            textAlign: 'center'
+            textAlign: 'left'
           }]
         },
         showParserList() {
           this.showParsePop = true;
+          this.chooseParserTemp=this.chooseParser;
         },
         toggleVipParser(dom, arr) {
           console.log(arguments)
-          this.chooseParser=arr[0]
+          this.chooseParserTemp=arr[0]
         },
-        goBack() {
-          console.log(1)
-        },
-        toggleMenu() {
-          this.showMenu = !this.showMenu;
-          console.log(this.showMenu)
-        },
+       
+        
         parseUrl() {
           var _searchs = window.location.search;
           if (_searchs.length === 0) return {};
