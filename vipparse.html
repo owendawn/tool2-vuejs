@@ -5,20 +5,6 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Vip Parse</title>
-  <!-- <script>
-    (function (doc, win) {
-     var docEl = doc.documentElement,
-      resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-      recalc = function () {
-       var clientWidth = docEl.clientWidth;
-       if (!clientWidth) return;
-       docEl.style.fontSize = 100 * (clientWidth / 2000) + 'px';
-      };
-     if (!doc.addEventListener) return;
-     win.addEventListener(resizeEvt, recalc, false);
-     doc.addEventListener('DOMContentLoaded', recalc, false);
-    })(document, window);
-   </script> -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, shrink-to-fit=no,user-scalable=0">
   <link rel="icon" href="http://pic.yupoo.com/owendawn/7d83eaa2/ac62287a.png" type="image/x-icon" />
   <meta name="Keywords" content="vip解析,个人使用请勿用于商用传播">
@@ -42,7 +28,7 @@
     }
 
     .mint-cell-wrapper>.mint-cell-title {
-      padding-left: 16px;
+      padding: 0 16px;
     }
 
     .mint-cell-value.is-link {
@@ -55,24 +41,31 @@
       height: 1.2rem;
       /* padding-top: 0.1rem; */
       min-height: 0;
+      display: block;
     }
-    .mint-header-title {
-      font-weight: bolder;
-      font-size: 0.75rem;
-    }
+    .chooseDiv .mint-cell-title{width: initial;}
+    .chooseDiv .mint-cell-value input{background-color: initial;padding:0 32px;}
+   
     .pickerTitle{
       /* flex-direction: row-reverse; */
       justify-content: center;
     }
   </style>
   <div id="root" style="height:100%;">
-    <pan-navbar></pan-navbar>
+    <pan-navbar v-if="!isFull" title="VIP解析"></pan-navbar>
+    <mt-field  class="chooseDiv" :placeholder="chooseParser" v-model="url" v-if="!isFull">
+      <mt-button type="primary" plain @click="showParserList" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-list"></i></mt-button>
+      <mt-button type="default" plain @click="fullScreen" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-expand"></i></mt-button>
+    </mt-field>
    
-    <mt-cell :title="chooseParser" class="chooseDiv">
-      <mt-button type="primary" plain @click="showParserList" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-list"> Choose</i></mt-button>
-    </mt-cell>
-    <div style="height:calc(100% - 2.7rem);background-color: black;">
-      <iframe width="100%" height="100%" src="" style="border:0;"></iframe>
+    <div style="background-color: black;" :style="isFull?'height:100%;':'height:calc(100% - 2.7rem);'">
+      <iframe width="100%" height="100%" :src="playUrl" style="border:0;"></iframe>
+    </div>
+
+    <div style="position: fixed;top: 50%;right: 0.5rem;font-size: 0.6rem;width: 1.2rem;height: 1.2rem;background: rgba(192, 192, 192, 0.35);border-radius: 0.2rem;" v-if="isFull" @click="closeFullScreen">
+      <div  style="color: rgba(255, 255, 255,0.3);width: 1rem;height: 1rem;margin-left: 0.1rem;margin-top: 0.1rem;text-align: center;line-height: 1rem;">
+        <i class="fa fa-compress"></i>
+      </div>
     </div>
 
     
@@ -87,6 +80,7 @@
     </mt-popup>
   </div>
   <script src="./asserts/navbar.js"></script>
+  <script src="./asserts/PanUtil.js"></script>
   <script>
     new Vue({
       el: '#root',
@@ -98,6 +92,8 @@
         chooseParser: '',
         chooseParserTemp: '',
         chooseParserIndex: -1,
+        url:'',
+        playUrl:'about:blank',
         vipParser: [
           { newTab: false, tengxun: true, youku: true, iqiyi: true, mangguo: false, url: "http://jiexi.071811.cc/jx.php?url=" },
           { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
@@ -128,6 +124,7 @@
         ]
       },
       mounted() {
+        const rurl=this.uncompileStr(PanUtil.getURLSearchParams().u);
         let replaceStr='⇿'
          replaceStr='↔'
          replaceStr='↠'
@@ -145,36 +142,44 @@
             + "_" + (it.mangguo ? 'ⓜ' : replaceStr)
             + " . " + this.getName(it.url)
             + (it.newTab ? ' +' : '');
+            if(rurl.indexOf(it.url)==0){
+              const vurl=rurl.substring(it.url.length);
+              this.url=rurl.substring(it.url.length);
+              if(vurl){
+              this.playUrl=rurl;
+              }else{
+                this.playUrl="about:blank"
+              }
+            }
         })
         this.chooseParser = this.vipParser[0].name
         this.chooseParserTemp = this.vipParser[0].name
         this.chooseParserIndex=0;
-        // this.type = this.$refs.Navbar.type;
-        // var _searchs = this.parseUrl();
-        // if (_searchs.u) {
-        //   var _allurl = this.uncompileStr(_searchs.u);
-        //   console.log(_allurl)
-        //   document.querySelectorAll('#node option').forEach(function (it, idx, all) {
-        //     if (_allurl.indexOf(it.value) !== -1) {
-        //       it.setAttribute('checked' , true);
-        //       it.setAttribute('selected' , true);
-        //       document.getElementById("vurl").value = _allurl.substring(it.value.length);
-        //     }
-        //   });
-        //   try {
-        //     document.getElementById("videoIframe").src = _allurl;
-        //   } catch (e) {
-        //     console.log(e);
-        //   }
-        // }
+        
+        
       },
       methods: {
+        closeFullScreen(){
+          this.isFull=false;
+        },
+        fullScreen(){
+          this.isFull=true;
+        },
         chooseParse() {
           this.showParsePop = false;
           this.chooseParser=this.chooseParserTemp;
           this.vipParser.forEach((it,idx,all)=>{
             if(it.name===this.chooseParserTemp){
               this.chooseParserIndex=idx;
+              const url=it.url+this.url;
+              if(!this.url){
+                window.location.href="vipparse.html";
+              }else if(it.newTab){
+                this.playUrl="about:blank"
+                window.open(url);
+              }else{
+                window.location.href="vipparse.html?u="+this.compileStr(url);
+              }
             }
           })
         },
@@ -203,24 +208,7 @@
           this.chooseParserTemp=this.chooseParser;
         },
         toggleVipParser(dom, arr) {
-          console.log(arguments)
           this.chooseParserTemp=arr[0]
-        },
-       
-        
-        parseUrl() {
-          var _searchs = window.location.search;
-          if (_searchs.length === 0) return {};
-          _searchs = _searchs.substring(1);
-          var _ss = _searchs.split("&");
-          var _params = {};
-          for (var i = 0; i < _ss.length; i++) {
-            var __o = _ss[i];
-            if (__o === "") continue;
-            var __os = __o.split("=");
-            _params[__os[0]] = __os[1];
-          }
-          return _params;
         },
         getName(url) {
           url = url.replace("http://", "").replace("https://", "");
@@ -232,32 +220,7 @@
             return arr[0];
           }
         },
-        clickParse() {
-          var _urlRoot = document.getElementById("node").value;
-          var _vurl = document.getElementById("vurl").value;
-          var _url = _urlRoot + _vurl.trim();
-          for (var i = 0; i < this.vipParser.length; i++) {
-            var it = this.vipParser[i];
-            if (it.url == _urlRoot && it.newTab) {
-              window.open(_url);
-              return;
-            }
-          }
-          window.location.href = "vipparse.html?u=" + this.compileStr(_url);
-        },
-        showModel() {
-          if (this.isFull) {
-            document.getElementsByTagName("body")[0].setAttribute("class", "");
-            this.isFull = false;
-            document.getElementById("compress").style = "display:none;";
-            document.getElementById("expand").style = "";
-          } else {
-            document.getElementsByTagName("body")[0].setAttribute("class", "videomodel");
-            this.isFull = true;
-            document.getElementById("compress").style = "";
-            document.getElementById("expand").style = "display:none;";
-          }
-        },
+
         compileStr(code) {
           var c = String.fromCharCode(code.charCodeAt(0) + code.length);
           for (var i = 1; i < code.length; i++) {
