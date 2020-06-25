@@ -20,91 +20,229 @@
   <!-- 基础样式 -->
   <link href="./asserts/base.css" rel="stylesheet">
   <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
 </head>
 
 <body style="overflow: hidden;">
   <div id="root" style="height:100%;">
     <pan-navbar title="磁力转换"></pan-navbar>
 
-    <div
-      style="background-color: antiquewhite;height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;padding:1rem;"
-      v-if="!isPredict">
-      <div style="font-size: 0.8rem;font-weight: bolder;font-family: cursive;color: #a8a8a8;font-style: oblique;">
-        忙碌的生活，快节奏的工作，烦人的感情
-        <br>
-        无数的选择，无数的困惑和无奈摆在我们面前
-        <br>
-        这个时候，你只需要打开这本书
-        <br>
-        拿走一个简单的答案和暗示
-      </div>
-      <br>
-      <div style="font-family: serif;font-weight: bolder;line-height: 2rem;color: #3b3939;font-size: 0.9rem;">
-        1.抛开心中杂念<br>2.双手虔诚的拿着手机<br>3.闭上眼睛</div>
+    <div style="height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;">
+      <mt-field label="原始地址" class="chooseDiv" placeholder="" v-model="raw" id="rawdiv">
+        <mt-button type="default" plain @click="copy('#rawdiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+            class="fa fa-copy"></i></mt-button>
+      </mt-field>
       <div
-        style="position: fixed;bottom: 2rem;right: calc(50% - 4rem);font-size: 0.6rem;height: 1.2rem;background: rgba(192, 192, 192, 0.9);border-radius: 0.2rem;padding:0 1rem;cursor:pointer"
-        @click="predict" v-if="!isPredict">
-        <div
-          style="color: rgba(255, 255, 255,0.7);height: 1rem;margin-left: 0.1rem;margin-top: 0.1rem;text-align: center;line-height: 1rem;">
-          <i class="fa fa-magic"></i> 倾听内心深处的声音
-        </div>
+        style="margin:0 10px;vertical-align: top;border-top: 1px solid silver;line-height: 1rem;text-align: center;padding-right:1rem;">
+        <mt-button type="primary" @click="convert(1)" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+          UTF16转换
+        </mt-button>
+        <mt-button type="primary" @click="convert(2)" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+          Unicode转换
+        </mt-button>
+        <mt-button type="primary" @click="convert(3)" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">GBK转换
+        </mt-button>
       </div>
+
+      <mt-field label="真实地址" class="chooseDiv" id="btdiv" placeholder="" v-model="bturl">
+        <mt-button type="default" plain @click="copy('#btdiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+            class="fa fa-copy"></i></mt-button>
+      </mt-field>
+      <div
+        style="margin-top: -0.4rem;line-height: 1rem;vertical-align: top;margin-bottom: 5px;text-align: start;padding-left: 1rem;">
+        <mt-button type="primary" plain @click="jumpToDownload('http://btcache.me/torrent/')"
+          style="height:1rem;font-size: 0.5rem;"><i class="fa fa-cloud-download-alt"> btcache.me</i></mt-button>
+        <mt-button type="primary" plain @click="jumpToDownload('https://itorrents.org/torrent/','.torrent')"
+          style="height:1rem;font-size: 0.5rem;"><i class="fa fa-cloud-download-alt"> itorrents.org</i></mt-button>
+        <mt-button type="primary" plain @click="jumpToDownload('https://www.yandex.com/search/?text=')"
+          style="height:1rem;font-size: 0.5rem;"><i class="fa fa-cloud-download-alt"> yandex</i></mt-button>
+      </div>
+      <mt-field label="迅雷地址" class="chooseDiv" id="thunderDiv" placeholder="" v-model="thunderurl">
+        <mt-button type="default" plain @click="copy('#thunderDiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+            class="fa fa-copy"></i></mt-button>
+      </mt-field>
+      <mt-field label="快车地址" class="chooseDiv" id="flashgetdiv" placeholder="" v-model="flashgeturl">
+        <mt-button type="default" plain @click="copy('#flashgetdiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+            class="fa fa-copy"></i></mt-button>
+      </mt-field>
+      <mt-field label="旋风地址" class="chooseDiv" id="qqDiv" placeholder="" v-model="qqurl">
+        <mt-button type="default" plain @click="copy('#qqDiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+            class="fa fa-copy"></i></mt-button>
+      </mt-field>
+      <div style="border-top: 1px solid silver;margin:0 10px;">
+      <span id="thunderdownload"></span>
+      <span id="otherdownload"></span>
+    </div>
     </div>
 
-    <div
-      style="background-color: antiquewhite;height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;padding:1rem;"
-      v-if="isPredict">
-      <div style="font-weight: bolder;font-family: cursive;color: rgb(85, 82, 82);font-style: oblique;padding: 3rem 0;font-size: 1.3rem;line-height: 2rem;">
-        {{str}}<mt-spinner type="double-bounce" style="display: inline-block;margin-left: 0.5rem;" v-if="isLoading"></mt-spinner>
-      </div>
-
-      <div
-        style="position: fixed;bottom: 2rem;right: calc(50% - 2rem);font-size: 0.6rem;height: 1.2rem;background: rgba(192, 192, 192, 0.9);border-radius: 0.2rem;padding:0 1rem;cursor:pointer"
-        @click="prepredict" v-if="isPredict">
-        <div
-          style="color: rgba(255, 255, 255,0.7);height: 1rem;margin-left: 0.1rem;margin-top: 0.1rem;text-align: center;line-height: 1rem;">
-          <i class="fa fa-reply-all"></i> 再一次问心
-        </div>
-      </div>
-    </div>
-
+   
   </div>
 
   <script src="./asserts/navbar.js"></script>
   <script src="./asserts/PanUtil.js"></script>
+  <script src="./asserts/encrypt.util.js"></script>
   <script>
     new Vue({
       el: '#root',
       data() {
         return {
-          isPredict: false,
-          isLoading:true,
-          result:'神奇的一天，总有一些意外的惊喜',
-          str:'',
+          raw: '',
+          bturl: '',
+          thunderurl: '',
+          flashgeturl: '',
+          qqurl: '',
         }
       },
       mounted() {
-
+          window.ConvertURL2FG=this.convertURL2FG;
       },
       methods: {
-        predict() {
-          this.isPredict = true;
-          this.str=''
-          this.loadResult();
+        copy(selector) {
+          let transfer = document.querySelector(selector);
+          transfer.focus();
+          transfer.select();
+          if (document.execCommand('copy')) {
+            document.execCommand('copy');
+          }
+          transfer.blur();
+          MINT.Toast({
+            message: '复制成功',
+            iconClass: 'icon icon-success'
+          });
         },
-        loadResult(){
-          this.isLoading=true;
-          setTimeout(()=>{
-            this.str=this.result.substring(0,this.str.length+1)
-            if(this.str.length==this.result.length){
-              this.isLoading=false;
-            }else{
-              this.loadResult();
+        convertURL2FG (url, fUrl, uid) {
+            try {
+                FlashgetDown(url, uid);
+            } catch (e) {
+                location.href = fUrl;
             }
-          },400);
         },
-        prepredict() {
-          this.isPredict = false;
+        convert(flag) {
+          function ThunderEncode(t_url) {
+            var thunderPrefix = "AA";
+            var thunderPosix = "ZZ";
+            var thunderTitle = "thunder://";
+            var tem_t_url = t_url;
+            var thunderUrl = thunderTitle + EncryptUtil.base64.encode64(EncryptUtil.utf16to8(thunderPrefix + tem_t_url + thunderPosix)) + '==';
+            return thunderUrl;
+          }
+          function Thunderdecode(url) {
+            url = url.replace('thunder://', '');
+            let thunderUrl = EncryptUtil.utf8to16(EncryptUtil.base64.decode64(url));
+            thunderUrl = thunderUrl.substr(2, thunderUrl.length - 4);
+            return thunderUrl;
+          }
+          // function ThunderEncode1(t_url) {
+          //     var thunderPrefix = "AA";
+          //     var thunderPosix = "ZZ";
+          //     var thunderTitle = "thunder://";
+          //     var tem_t_url = t_url;
+          //     var thunderUrl = thunderTitle + EncryptUtil.base64.encode64(EncryptUtil.Ansi.strUnicode2Ansi(thunderPrefix + tem_t_url + thunderPosix))+'==';
+          //     return thunderUrl;
+          // }
+          function Thunderdecode1(url) {
+            url = url.replace('thunder://', '');
+            let thunderUrl = EncryptUtil.Ansi.strAnsi2Unicode(EncryptUtil.base64.decode64(url));
+            thunderUrl = thunderUrl.substr(2, thunderUrl.length - 4);
+            return thunderUrl;
+          }
+          function Thunderdecode2(url) {
+            url = url.replace('thunder://', '');
+            url = url.substr(0, url.length - 2);
+            let thunderUrl = new TextDecoder('gbk').decode(new Uint8Array(EncryptUtil.base64.toBytes(url)));
+            thunderUrl = thunderUrl.replace(/\s/g, "").substr(2, thunderUrl.length - 4);
+            console.log(thunderUrl)
+            return thunderUrl;
+          }
+
+
+
+          function flashgetencode(url) {
+            url = 'Flashget://' + EncryptUtil.base64.encode64(EncryptUtil.utf16to8('[FLASHGET]' + url + '[FLASHGET]')) + '&1926';
+            return url;
+          }
+          function Flashgetdecode(url) {
+            url = url.replace('Flashget://', '');
+            if (url.indexOf('&') != -1) {
+              url = url.substr(0, url.indexOf('&'));
+            }
+            url = EncryptUtil.utf8to16(EncryptUtil.base64.decode64(url));
+            flashgeturl = url.replace('[FLASHGET]', '').replace('[FLASHGET]', '');
+            return flashgeturl;
+          }
+
+
+          function qqencode(url) {
+            return 'qqdl://' + EncryptUtil.base64.encode64(EncryptUtil.utf16to8(url));
+          }
+          function qqdecode(url) {
+            return EncryptUtil.utf8to16(EncryptUtil.base64.decode64(url.replace('qqdl://', '')));
+          }
+
+
+          let oldurl = this.raw;
+          if (oldurl == '') {
+            return;
+          }
+          let newurl;
+          if (oldurl.indexOf("thunder://") != -1) {
+            if (flag === 1) {
+              newurl = Thunderdecode(oldurl);
+            } else if (flag === 2) {
+              newurl = Thunderdecode1(oldurl);
+            } else if (flag === 3) {
+              newurl = Thunderdecode2(oldurl);
+            }
+          } else if (oldurl.indexOf("Flashget://") != -1) {
+            newurl = Flashgetdecode(oldurl);
+          } else if (oldurl.indexOf("qqdl://") != -1) {
+            newurl = qqdecode(oldurl);
+          } else {
+            newurl = oldurl;
+          }
+
+          let thunderurl;
+          // if(flag===1){
+          thunderurl = ThunderEncode(newurl);
+          // }else if (flag===2) {
+          //     thunderurl = ThunderEncode1(newurl);
+          // }
+          let flashgeturl = flashgetencode(newurl);
+          let qqurl = qqencode(newurl);
+
+          this.reWrite(oldurl, newurl, thunderurl, flashgeturl, qqurl);
+        },
+        reWrite(oldurl, newurl, thunderurl, flashgeturl, qqurl) {
+          function createThunderDownLoadADOm(label, url, title, id, name, cls, style) {
+            return [
+              "<a",
+              "	oncontextmenu=ThunderNetwork_SetHref(this) ",
+              id ? "id='" + id + "'" : "",
+              name ? "name='" + name + "'" : "",
+              "	style='" + (style || "") + "'",
+              "	class='" + (cls || "") + "'",
+              ' 	onclick="return OnDownloadClick_Simple(this)" ',
+              '	href="' + url + '"',
+              ' 	thunderResTitle="' + (title || "迅雷下载") + '"',
+              ' 	thunderType="04"',
+              ' 	thunderPid="00008"',
+              ' 	thunderHref="' + url + '"',
+              '>' + (label || "迅雷下载") + '</a>'
+            ].join("");
+          }
+          function createFlashgetOrOtherDownLoadADOm(label, url, flashgeturl, id, name, cls, style) {
+            var str = "<a href='javascript://' class='"+cls+"' onclick='ConvertURL2FG(\"" + flashgeturl + "\",\"" + url + "\",1926)'>" + label + "</a>";
+            return str;
+          }
+          this.bturl = newurl;
+          this.thunderurl = thunderurl;
+          this.flashgeturl = flashgeturl;
+          this.qqurl = qqurl;
+          document.getElementById("thunderdownload").innerHTML = createThunderDownLoadADOm("迅雷下载", thunderurl, "迅雷下载", null, null, "btn btn-link", null);
+          document.getElementById("otherdownload").innerHTML = createFlashgetOrOtherDownLoadADOm("其他下载", newurl, flashgeturl, null, null, "btn btn-link", null);
+        },
+        jumpToDownload(rootUrl, footUrl) {
+          window.open(rootUrl + this.raw.replace('magnet:?xt=urn:btih:', "") + (footUrl ? footUrl : ""));
         }
       }
     })
