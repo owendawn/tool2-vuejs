@@ -1,6 +1,6 @@
 Vue.component("pan-navbar", {
   template: [
-    "<div>",
+    "<div class='pannav'>",
     '   <mt-header :title="title" style="height:1.5rem;">',
     '       <mt-button slot="left" @click="goBack" style="font-size: 0.75rem;"><i class="fa fa-home"></i></mt-button>',
     '       <mt-button icon="more" slot="right" @click="toggleMenu" style="font-size: 0.75rem;"></mt-button>',
