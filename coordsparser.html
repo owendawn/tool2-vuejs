@@ -29,14 +29,14 @@
 
     <div style="height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;">
       <mt-field label="小数形式" v-model="xiaoshu">
-        <mt-button type="primary" @click="changeToDFM" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+        <mt-button type="primary" plain @click="changeToDFM" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
           转换
         </mt-button>
       </mt-field>
       <hr>
 
       <mt-field label="度分秒形式" v-model="dufenmiao">
-        <mt-button type="default" @click="parseToDu" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+        <mt-button type="default" plain @click="parseToDu" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
           分解
         </mt-button>
       </mt-field>
@@ -46,7 +46,7 @@
       <mt-field label="分（ ' ）" v-model="fen" style="height:1.6rem;">'</mt-field>
       <mt-field label="秒（ &quot; ）" v-model="miao" style="height:1.7rem;">"</mt-field>
       <div style="border-top:1px solid #e1dede;border-bottom:1px solid #e1dede;margin:0 10px;text-align: end;">
-      <mt-button type="primary" @click="changeToDu" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+      <mt-button type="primary" plain @click="changeToDu" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
         转换
       </mt-button>
       </div>

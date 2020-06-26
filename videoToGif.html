@@ -29,7 +29,7 @@
 
     <div style="height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;overflow: auto;">
       <div style="margin:0 1rem;">
-        <mt-button type="default" @click="openVideo()"><i class="fa fa-folder-open"></i></mt-button>
+        <mt-button type="default" plain @click="openVideo()"><i class="fa fa-folder-open"></i></mt-button>
         <mt-button type="primary" plain @click="initAll" :disabled="start">初始化所有配置参数</mt-button>
         <mt-button type="primary" plain @click="drawVideo" v-if="!start">开始截图</mt-button>
         <mt-button type="primary" plain @click="finishDrawVideo" v-if="start">停止截图</mt-button>

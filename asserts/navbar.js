@@ -19,6 +19,7 @@ Vue.component("pan-navbar", {
     '           <mt-cell title="视频转动画" to="videoToGif.html" is-link value="Video To Gif"></mt-cell>',
     '           <mt-cell title="图片灰度转换" to="imgToGray.html" is-link value="Image To Gray"></mt-cell>',
     '           <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>',
+    '           <mt-cell title="车辆识别号解析" to="carcodeparser.html" is-link value="Car Code Parser"></mt-cell>',
     '           <mt-cell title="Else" to="#" is-link value="Another"></mt-cell>',
     '           <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>',
     "       </div>",

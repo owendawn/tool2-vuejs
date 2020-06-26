@@ -29,15 +29,15 @@
 
     <div style="height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;">
       <mt-field label="金额（数字）" class="chooseDiv" placeholder="" v-model="raw" id="rawdiv">
-        <mt-button type="primary" @click="convert()" style="height:1rem;margin-bottom:0.2rem;font-size: 0.5rem;">
+        <mt-button type="primary" plain @click="convert()" style="height:1rem;font-size: 0.5rem;">
           转换
         </mt-button>
-        <mt-button type="default" plain @click="copy('#rawdiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+        <mt-button type="default" plain @click="copy('#rawdiv input')" style="height:1rem;font-size: 0.5rem;"><i
             class="fa fa-copy"></i></mt-button>
       </mt-field>
 
       <mt-field label="金额（标准）" class="chooseDiv" id="btdiv" placeholder="" v-model="newVal">
-        <mt-button type="default" plain @click="copy('#btdiv input')" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+        <mt-button type="default" plain @click="copy('#btdiv input')" style="height:1rem;font-size: 0.5rem;"><i
             class="fa fa-copy"></i></mt-button>
       </mt-field>
     </div>
