@@ -75,7 +75,7 @@
 
     
     <mt-popup v-model="showParsePop" position="bottom" style="width: calc(100% - 48px);padding: 24px;">
-      <mt-picker :slots="getVipParserData()" textAlign="center" :defaultIndex="chooseParserIndex" showToolbar="true" valueKey="name" content="name" @change="toggleVipParser"
+      <mt-picker :slots="pickerData" textAlign="center" showToolbar="true"  value-key="name" @change="toggleVipParser"
         style="width: 100%;">
       </mt-picker>
       <div style="justify-content: space-around;display:flex;margin-top:24px;">
@@ -98,10 +98,11 @@
         chooseParserIndex: -1,
         url:'',
         playUrl:'about:blank',
+        u:'',
         vipParser: [
           { newTab: false, tengxun: true, youku: true, iqiyi: true, mangguo: false, url: "http://jiexi.071811.cc/jx.php?url=" },
-          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
-          { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/jx/jx.php?url=" },
+          { newTab: true, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
+          { newTab: true, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/jx/jx.php?url=" },
           { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.du2.cc/?url=" },
           { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://vip.jlsprh.com/v/3.php?url=" },
           { newTab: false, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.598110.com/?url=" },
@@ -125,10 +126,12 @@
           { newTab: false, tengxun: true, youku: false, iqiyi: false, mangguo: false, url: "http://17kyun.com/api.php?url=" },
 
 
-        ]
+        ],
+        pickerData:[]
       },
       mounted() {
-        const rurl=this.uncompileStr(PanUtil.getURLSearchParams().u);
+        this.u=PanUtil.getURLSearchParams().u;
+        const rurl=this.uncompileStr(this.u);
         let replaceStr='⇿'
          replaceStr='↔'
          replaceStr='↠'
@@ -139,6 +142,10 @@
          replaceStr='↣'
          replaceStr='⇻'
          replaceStr='↭'
+         this.chooseParserIndex=0;
+         this.chooseParser = this.vipParser[0].name
+        this.chooseParserTemp = this.vipParser[0].url
+        
         this.vipParser.forEach((it, idx, all) => {
           it.name = (it.tengxun ? 'ⓣ' : replaceStr)
             + "_" + (it.youku ? 'ⓨ' : replaceStr)
@@ -148,19 +155,12 @@
             + (it.newTab ? ' +' : '');
             if(rurl.indexOf(it.url)==0){
               const vurl=rurl.substring(it.url.length);
-              this.url=rurl.substring(it.url.length);
-              if(vurl){
-              this.playUrl=rurl;
-              }else{
-                this.playUrl="about:blank"
-              }
+              this.url=vurl;
+              this.chooseParserIndex=idx;
+              this.chooseParserTemp = it.url;
             }
         })
-        this.chooseParser = this.vipParser[0].name
-        this.chooseParserTemp = this.vipParser[0].name
-        this.chooseParserIndex=0;
-        
-        
+        this.realChoose();
       },
       methods: {
         closeFullScreen(){
@@ -171,10 +171,14 @@
         },
         chooseParse() {
           this.showParsePop = false;
-          this.chooseParser=this.chooseParserTemp;
+          this.realChoose();
+        },
+        realChoose(){
+         
           this.vipParser.forEach((it,idx,all)=>{
-            if(it.name===this.chooseParserTemp){
+            if(it.url===this.chooseParserTemp){
               this.chooseParserIndex=idx;
+              this.chooseParser=it.name;
               const url=it.url+this.url;
               if(!this.url){
                 window.location.href="vipparse.html";
@@ -182,10 +186,16 @@
                 this.playUrl="about:blank"
                 window.open(url);
               }else{
-                window.location.href="vipparse.html?u="+this.compileStr(url);
+                const cu=this.compileStr(url)
+                if(this.u!=cu){
+                window.location.href="vipparse.html?u="+cu;
+                }else{
+                  this.playUrl=url
+                }
               }
             }
           })
+          this.pickerData=this.getVipParserData(this.chooseParserIndex)
         },
         cancelChooseParse() {
           this.showParsePop = false;
@@ -193,7 +203,7 @@
         parseListFormatter() {
           console.log(arguments)
         },
-        getVipParserData() {
+        getVipParserData(idx) {
           return [{
             divider: true,
             flex: 3,
@@ -202,17 +212,19 @@
             textAlign: 'middle'
           }, {
             flex: 7,
-            values: this.vipParser.map((it, idx, all) => it.name),
+            values: this.vipParser.map((it, idx, all) => it),
+            defaultIndex:idx||0,
             className: 'slot1',
             textAlign: 'left'
           }]
         },
         showParserList() {
           this.showParsePop = true;
-          this.chooseParserTemp=this.chooseParser;
         },
         toggleVipParser(dom, arr) {
-          this.chooseParserTemp=arr[0]
+          if(arr.length>0){
+          this.chooseParserTemp=arr[0].url
+          }
         },
         getName(url) {
           url = url.replace("http://", "").replace("https://", "");
