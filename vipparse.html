@@ -5,7 +5,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Vip Parser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, shrink-to-fit=no,user-scalable=0">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1.0, shrink-to-fit=no,user-scalable=0">
   <link rel="icon" href="http://pic.yupoo.com/owendawn/7d83eaa2/ac62287a.png" type="image/x-icon" />
   <meta name="Keywords" content="vip解析,个人使用请勿用于商用传播">
   <meta name="Description" content="vip解析,个人使用请勿用于商用传播">
@@ -43,45 +44,72 @@
       min-height: 0;
       display: block;
     }
-    .chooseDiv .mint-cell-title{width: initial;}
-    .chooseDiv .mint-cell-value input{background-color: initial;padding:0 32px;}
-   
-    .pickerTitle{
+
+    .chooseDiv .mint-cell-title {
+      width: initial;
+    }
+
+    .chooseDiv .mint-cell-value input {
+      background-color: initial;
+      padding: 0 32px;
+    }
+
+    .pickerTitle {
       /* flex-direction: row-reverse; */
       justify-content: center;
     }
-    #root .compress{display:none;}
-    #root.isfull .compress{display:block;}
-    #root.isfull .content{height:100%!important;}
-    #root.isfull .chooseDiv,#root.isfull .pannav{display:none;}
+
+    #root .compress {
+      display: none;
+    }
+
+    #root.isfull .compress {
+      display: block;
+    }
+
+    #root.isfull .content {
+      height: 100% !important;
+    }
+
+    #root.isfull .chooseDiv,
+    #root.isfull .pannav {
+      display: none;
+    }
   </style>
   <div id="root" style="height:100%;">
     <pan-navbar title="VIP解析"></pan-navbar>
 
-    <mt-field  class="chooseDiv" :placeholder="chooseParser" v-model="url">
-      <mt-button type="primary" plain @click="showParserList" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-list"></i></mt-button>
-      <mt-button type="default" plain @click="fullScreen" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i class="fa fa-expand"></i></mt-button>
+    <mt-field class="chooseDiv" :placeholder="chooseParser" v-model="url">
+      <mt-button type="primary" plain @click="showParserList" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;">
+        <i class="fa fa-list"></i></mt-button>
+      <mt-button type="default" plain @click="fullScreen" style="height:1rem;margin-top:0.1rem;font-size: 0.5rem;"><i
+          class="fa fa-expand"></i></mt-button>
     </mt-field>
-   
+
     <div class="content" style="background-color: black;height:calc(100% - 2.7rem);">
       <iframe width="100%" height="100%" :src="playUrl" style="border:0;"></iframe>
     </div>
 
-    <div class="compress" style="position: fixed;top: 50%;right: 0.5rem;font-size: 0.6rem;width: 1.2rem;height: 1.2rem;background: rgba(192, 192, 192, 0.35);border-radius: 0.2rem;" @click="closeFullScreen">
-      <div  style="color: rgba(255, 255, 255,0.3);width: 1rem;height: 1rem;margin-left: 0.1rem;margin-top: 0.1rem;text-align: center;line-height: 1rem;">
+    <div class="compress"
+      style="position: fixed;top: 50%;right: 0.5rem;font-size: 0.6rem;width: 1.2rem;height: 1.2rem;background: rgba(192, 192, 192, 0.35);border-radius: 0.2rem;"
+      @click="closeFullScreen">
+      <div
+        style="color: rgba(255, 255, 255,0.3);width: 1rem;height: 1rem;margin-left: 0.1rem;margin-top: 0.1rem;text-align: center;line-height: 1rem;">
         <i class="fa fa-compress"></i>
       </div>
     </div>
 
-    
+
     <mt-popup v-model="showParsePop" position="bottom" style="width: calc(100% - 48px);padding: 24px;">
-      <mt-picker :slots="pickerData" textAlign="center" showToolbar="true"  value-key="name" @change="toggleVipParser"
+      <mt-picker :slots="pickerData" textAlign="center" showToolbar="true" value-key="name" @change="toggleVipParser"
         style="width: 100%;">
       </mt-picker>
       <div style="justify-content: space-around;display:flex;margin-top:24px;">
-      <mt-button type="danger" size="small" plain @click="cancelChooseParse" style="width: 30%;"><i class="fa fa-cancel"> Cancel</i></mt-button>
-      <mt-button type="primary" size="small" plain @click="chooseParse" style="width: 30%;"><i class="fa fa-ok"> Ok</i></mt-button>
-    </div>
+        <mt-button type="danger" size="small" plain @click="cancelChooseParse" style="width: 30%;"><i
+            class="fa fa-cancel"> Cancel</i></mt-button>
+        <mt-button type="primary" size="small" plain @click="chooseParse" style="width: 30%;"><i class="fa fa-ok">
+            Ok</i></mt-button>
+      </div>
     </mt-popup>
   </div>
   <script src="./asserts/navbar.js"></script>
@@ -96,9 +124,9 @@
         chooseParser: '',
         chooseParserTemp: '',
         chooseParserIndex: -1,
-        url:'',
-        playUrl:'about:blank',
-        u:'',
+        url: '',
+        playUrl: 'about:blank',
+        u: '',
         vipParser: [
           { newTab: false, tengxun: true, youku: true, iqiyi: true, mangguo: false, url: "http://jiexi.071811.cc/jx.php?url=" },
           { newTab: true, tengxun: true, youku: true, iqiyi: false, mangguo: true, url: "http://jx.618ge.com/?url=" },
@@ -127,25 +155,25 @@
 
 
         ],
-        pickerData:[]
+        pickerData: []
       },
       mounted() {
-        this.u=PanUtil.getURLSearchParams().u;
-        const rurl=this.uncompileStr(this.u);
-        let replaceStr='⇿'
-         replaceStr='↔'
-         replaceStr='↠'
-         replaceStr='↝'
-         replaceStr='⇴'
-         replaceStr='⇝'
-         replaceStr='↛'
-         replaceStr='↣'
-         replaceStr='⇻'
-         replaceStr='↭'
-         this.chooseParserIndex=0;
-         this.chooseParser = this.vipParser[0].name
+        this.u = PanUtil.getURLSearchParams().u;
+        const rurl = this.uncompileStr(this.u);
+        let replaceStr = '⇿'
+        replaceStr = '↔'
+        replaceStr = '↠'
+        replaceStr = '↝'
+        replaceStr = '⇴'
+        replaceStr = '⇝'
+        replaceStr = '↛'
+        replaceStr = '↣'
+        replaceStr = '⇻'
+        replaceStr = '↭'
+        this.chooseParserIndex = 0;
+        this.chooseParser = this.vipParser[0].name
         this.chooseParserTemp = this.vipParser[0].url
-        
+
         this.vipParser.forEach((it, idx, all) => {
           it.name = (it.tengxun ? 'ⓣ' : replaceStr)
             + "_" + (it.youku ? 'ⓨ' : replaceStr)
@@ -153,51 +181,56 @@
             + "_" + (it.mangguo ? 'ⓜ' : replaceStr)
             + " . " + this.getName(it.url)
             + (it.newTab ? ' +' : '');
-            if(rurl.indexOf(it.url)==0){
-              const vurl=rurl.substring(it.url.length);
-              this.url=vurl;
-              this.chooseParserIndex=idx;
-              this.chooseParserTemp = it.url;
-            }
+          if (rurl.indexOf(it.url) == 0) {
+            const vurl = rurl.substring(it.url.length);
+            this.url = vurl;
+            this.chooseParserIndex = idx;
+            this.chooseParserTemp = it.url;
+          }
         })
         this.realChoose();
       },
       methods: {
-        closeFullScreen(){
-          document.getElementById('root').className=""
+        closeFullScreen() {
+          document.getElementById('root').className = ""
         },
-        fullScreen(){
-          document.getElementById('root').className="isfull"
+        fullScreen() {
+          document.getElementById('root').className = "isfull"
         },
         chooseParse() {
           this.showParsePop = false;
           this.realChoose();
         },
-        realChoose(){
-         
-          this.vipParser.forEach((it,idx,all)=>{
-            if(it.url===this.chooseParserTemp){
-              this.chooseParserIndex=idx;
-              this.chooseParser=it.name;
-              const url=it.url+this.url;
-              if(!this.url){
-                if(window.location.search){
-                window.location.href="vipparse.html";
+        realChoose() {
+
+          this.vipParser.forEach((it, idx, all) => {
+            if (it.url === this.chooseParserTemp) {
+              this.chooseParserIndex = idx;
+              this.chooseParser = it.name;
+              const url = it.url + this.url;
+              if (!this.url) {
+                if (window.location.search) {
+                  window.location.href = "vipparse.html";
                 }
-              }else if(it.newTab){
-                this.playUrl="about:blank"
-                window.open(url);
-              }else{
-                const cu=this.compileStr(url)
-                if(this.u!=cu){
-                window.location.href="vipparse.html?u="+cu;
-                }else{
-                  this.playUrl=url
+              } else if (it.newTab) {
+                const cu = this.compileStr(url)
+                if (this.u != cu) {
+                  window.location.href = "vipparse.html?u=" + cu;
+                } else {
+                  this.playUrl = "about:blank"
+                  window.open(url);
+                }
+              } else {
+                const cu = this.compileStr(url)
+                if (this.u != cu) {
+                  window.location.href = "vipparse.html?u=" + cu;
+                } else {
+                  this.playUrl = url
                 }
               }
             }
           })
-          this.pickerData=this.getVipParserData(this.chooseParserIndex)
+          this.pickerData = this.getVipParserData(this.chooseParserIndex)
         },
         cancelChooseParse() {
           this.showParsePop = false;
@@ -215,7 +248,7 @@
           }, {
             flex: 7,
             values: this.vipParser.map((it, idx, all) => it),
-            defaultIndex:idx||0,
+            defaultIndex: idx || 0,
             className: 'slot1',
             textAlign: 'left'
           }]
@@ -224,8 +257,8 @@
           this.showParsePop = true;
         },
         toggleVipParser(dom, arr) {
-          if(arr.length>0){
-          this.chooseParserTemp=arr[0].url
+          if (arr.length > 0) {
+            this.chooseParserTemp = arr[0].url
           }
         },
         getName(url) {
