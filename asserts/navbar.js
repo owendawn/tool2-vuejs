@@ -9,6 +9,8 @@ Vue.component("pan-navbar", {
     '       style="box-shadow: -5px -1px 5px rgba(96, 93, 93, 0.5);overflow:auto;max-width:360px;margin-top:-1px;width:70%;height:100%;background-color: #f8f8f8;">',
     "       <div>",
     '           <div style="text-align: center;font-weight: bolder;font-size: 2rem;padding: 34px 0;background-color: white;">- UV -</div>',
+    '           <mt-cell title="仰望星空" to="index2.html" is-link value="Home"></mt-cell>',
+    '           <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>',
     '           <mt-cell title="VIP解析" to="vipparse.html" is-link value="Vip Parser"></mt-cell>',
     '           <mt-cell title="问题之书" to="magicbook.html" is-link value="Magic Book"></mt-cell>',
     '           <mt-cell title="磁力转换" to="btparser.html" is-link value="BT Parser"></mt-cell>',
