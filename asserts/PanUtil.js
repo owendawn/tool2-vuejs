@@ -148,6 +148,23 @@ PanUtil = {
         _s.src=url+"&"+jsonpName+"="+cfn+"&"+this.parseObjectToFormData(data);
         document.body.appendChild(_s);
     },
+    jsonPostMessage:function(url,data,succ){
+        var _s=document.createElement("iframe");
+        _s.style="height:0"
+        var cfn="panutil_"+new Date().getTime();
+        window.addEventListener("message", function(e){
+            var data=JSON.parse(e.data)
+            console.log(data)
+            if(data.type==="PanPostMessage"&&data.panpostmsgid===cfn){
+                succ(data.data,data,e)
+            }
+        }, false);
+        if(url.indexOf("?")<0){
+        	url+="?";
+        }
+        _s.src=url+"&panpostmsgid="+cfn+"&"+this.parseObjectToFormData(data);
+        document.body.appendChild(_s);
+    },
     //url参数解析
     getURLSearchParams: function() {
         if (window.location.search == "") {

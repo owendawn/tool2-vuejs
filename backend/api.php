@@ -1,15 +1,16 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-// header("Access-Control-Allow-Headers: X-Requested-With,X_Requested_With");
+header("Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS, DELETE, PATCH");
+header("Access-Control-Allow-Headers: *");
 header("Access-Control-Max-Age: 1800");
-// header("Content-Type: application/Json");
+
 
   // var_dump($_GET);
   $url=$_SERVER["REQUEST_URI"];
   $uri=$_SERVER["PHP_SELF"];
   $queryStr=$_SERVER['QUERY_STRING'];
   $callback = isset($_REQUEST['callback'])?$_REQUEST['callback']:null;
+  $panpostmsgid = isset($_REQUEST['panpostmsgid'])?$_REQUEST['panpostmsgid']:null;
   // var_dump($_SERVER);
   // var_dump($url);
   // var_dump($uri);
@@ -31,10 +32,19 @@ header("Access-Control-Max-Age: 1800");
         $method=$apiarr[1];
         $re=$controller->$method();
         if(isset($callback)){
+          header("content-type: application/javascript");
           echo "/**/";
           print($callback . "(".json_encode($re).")");
+        }else if(isset($panpostmsgid)){
+          print(
+            "<html><head><meta http-equiv='Content-Type' content='text/html;charset=utf-8'></head><body><script>".
+            "window.parent.postMessage('{\"type\":\"PanPostMessage\",\"panpostmsgid\":\"".$panpostmsgid."\",\"data\":".json_encode($re)."}', '*');".
+            "</script></body></html>"
+          );
         }else{
+          header("Content-Type: application/Json");
           print(json_encode($re));
+          
         }
       }else{
         print_r("非法api调用：101");
@@ -47,5 +57,12 @@ header("Access-Control-Max-Age: 1800");
     print_r("非法api调用：001");
   }
 
-
+  // Access-Control-Allow-Credentials: true
+  // Access-Control-Allow-Headers: *
+  // Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS, DELETE, PATCH
+  // Access-Control-Allow-Origin: *
+  // Access-Control-Expose-Headers: *
+  // Access-Control-Max-Age: 1800
+  // Connection: keep-alive
+  // Content-Type: application/json
 ?>
