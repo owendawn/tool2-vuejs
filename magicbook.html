@@ -101,8 +101,8 @@
           // const url="http://localhost/tool2-vuejs/backend/api.php?m=MagicBookController!random"
           const url="http://pan.is-best.net/tool2-vuejs/backend/api.php?m=MagicBookController!random"
           //  PanUtil.ajax.get(
-           PanUtil.jsonp(
-          //  PanUtil.jsonPostMessage(
+          //  PanUtil.jsonp(
+           PanUtil.jsonPostMessage(
              url,{},(re)=>{
             this.result=re.data[0].name;
             this.result2=re.data[0].name_en||'';
