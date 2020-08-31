@@ -25,7 +25,7 @@
 <body style="overflow: hidden;">
   <div id="root" style="height:100%;">
     <pan-navbar title="问题之书"></pan-navbar>
-    <iframe style="display: none;" src="http://pan.is-best.net/tool2-vuejs/backend/api.php?m=MagicBookController!getDateTime"></iframe>
+    <!-- <iframe style="display: none;" src="http://pan.is-best.net/tool2-vuejs/backend/api.php?m=MagicBookController!getDateTime"></iframe> -->
 
     <div
       style="background-color: antiquewhite;height:calc(100% - 1.5rem);font-size: 1rem;text-align: center;padding:1rem;"
@@ -102,7 +102,8 @@
           const url="http://pan.is-best.net/tool2-vuejs/backend/api.php?m=MagicBookController!random"
           //  PanUtil.ajax.get(
           //  PanUtil.jsonp(
-           PanUtil.jsonPostMessage(
+          //  PanUtil.jsonPostMessage(
+           PanUtil.iframePostMessage("get",
              url,{},(re)=>{
             this.result=re.data[0].name;
             this.result2=re.data[0].name_en||'';

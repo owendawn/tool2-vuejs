@@ -1,3 +1,10 @@
+var baseUrlOfThisPage=window.location.origin+window.location.pathname;
+if(baseUrlOfThisPage.endsWith("/")){
+
+}else{
+  baseUrlOfThisPage=baseUrlOfThisPage.substring(0,baseUrlOfThisPage.lastIndexOf("/"))
+}
+
 Vue.component("pan-navbar", {
   template: [
     "<div class='pannav'>",
@@ -12,7 +19,7 @@ Vue.component("pan-navbar", {
     '           <mt-cell title="仰望星空" to="index2.html" is-link value="Home"></mt-cell>',
     '           <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>',
     '           <mt-cell title="VIP解析" to="vipparse.html" is-link value="Vip Parser"></mt-cell>',
-    '           <mt-cell title="问题之书" to="magicbook.html" is-link value="Magic Book"></mt-cell>',
+    '           <mt-cell title="问题之书" to="http://pan.is-best.net/iframe.php?'+baseUrlOfThisPage+'magicbook.html" is-link value="Magic Book"></mt-cell>',
     '           <mt-cell title="磁力转换" to="btparser.html" is-link value="BT Parser"></mt-cell>',
     '           <mt-cell title="" style="min-height: 16px;background-color: inherit;"></mt-cell>',
     '           <mt-cell title="金融转换" to="financeparser.html" is-link value="Finance Parser"></mt-cell>',
