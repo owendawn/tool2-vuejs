@@ -2,7 +2,7 @@ var baseUrlOfThisPage=window.location.origin+window.location.pathname;
 if(baseUrlOfThisPage.endsWith("/")){
 
 }else{
-  baseUrlOfThisPage=baseUrlOfThisPage.substring(0,baseUrlOfThisPage.lastIndexOf("/"))
+  baseUrlOfThisPage=baseUrlOfThisPage.substring(0,baseUrlOfThisPage.lastIndexOf("/"))+"/"
 }
 
 Vue.component("pan-navbar", {
